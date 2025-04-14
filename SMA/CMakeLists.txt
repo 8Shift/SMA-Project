@@ -6,7 +6,7 @@ find_package(botan CONFIG REQUIRED)
 add_executable(
     SMA 
 
-	main.cpp
+	"src/main.cpp"
     src/crypt/crypt.h src/crypt/crypt.cpp
     src/core/app.h src/core/app.cpp
     src/network/netclient.h src/network/netclient.cpp

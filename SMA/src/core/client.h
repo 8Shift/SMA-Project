@@ -2,23 +2,23 @@
 
 #include <cstdint>
 #include <string>
-#include <memory>
-#include <stdexcept>
 
-#include "clientinfo.h"
+#include "profile.h"
 
 struct PhoneNumber;
 struct Bio;
 struct Mail;
 struct ToxID;
-struct ClientInfo;
 
 class Client
 {
 private:
-	uint32_t id{NULL};
+	std::string id;
 	std::string name;
-	ClientInfo info;
+	PhoneNumber phoneNumber;
+	Bio bio;
+	Mail email;
+	ToxID tid;
 public:
 	Client() = default;
 	Client(const Client& other) = default;
@@ -30,12 +30,15 @@ public:
 	void genID();
 
 	void setName(std::string newName);
-	void setPhoneNumber(PhoneNumber num);
-	void setToxID(ToxID id);
-	void setMail(Mail ml);
-	void setBio();
+	void setPhoneNumber(PhoneNumber &num);
+	void setToxID(ToxID &id);
+	void setMail(Mail &ml);
+	void setBio(Bio &description);
 
-	std::string getClientName() const;
-	ClientInfo getClientInfo() const;
-	uint64_t getClientId() const;
+	std::string getName() const;
+	std::string getId() const;
+	Mail getMail();
+	PhoneNumber getNumber() const;
+	Bio getBio() const;
+	ToxID getToxID() const;
 };

@@ -6,7 +6,8 @@ find_package(botan CONFIG REQUIRED)
 add_executable(
     SMA 
 
-	"src/main.cpp"
+	src/main.cpp
+    src/network/crc32.h 
     src/crypt/crypt.h src/crypt/crypt.cpp
     src/core/app.h src/core/app.cpp
     src/network/netclient.h src/network/netclient.cpp
@@ -17,7 +18,7 @@ add_executable(
     src/core/client.h src/core/client.cpp
     src/network/protocol.h src/network/protocol.cpp
     src/network/checksum.h src/network/checksum.cpp
-    src/network/crc32.h  src/core/clientinfo.h
+    src/core/profile.h src/core/profile.cpp
 )
 
 target_link_libraries(SMA PRIVATE Botan::Botan)

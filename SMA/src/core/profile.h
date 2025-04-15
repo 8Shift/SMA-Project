@@ -1,11 +1,15 @@
 #pragma once
 
+#include <stdexcept>
+
 #include "client.h"
 
 struct PhoneNumber
 {
     uint32_t countryCode;
     uint32_t number;
+
+    std::string toStdString();
 };
 
 struct Bio
@@ -18,6 +22,10 @@ struct Mail
     const char mailChar = '@';
     std::string host;
     std::string name;
+
+    std::string toStdString();
+
+    Mail& operator= (const Mail& other);
 };
 
 struct ToxID
@@ -31,12 +39,4 @@ struct ToxID
         }
         id = hex;
     }
-};
-
-struct ClientInfo
-{
-    PhoneNumber phoneNumber;
-    Bio bio;
-    Mail email;
-    ToxID toxId;
 };

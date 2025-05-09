@@ -1,24 +1,42 @@
 #pragma once
 
 #include <iostream>
+#include <map>
+#include <source_location>
 #include <string>
 
-enum class LogMode;
-enum class LogLevel;
-
-class Logger
+enum class LogLevel
 {
-private:
-	LogMode mode;
+	TRACE,
+	DEBUG,
+	INFO,
+	WARN,
+	ERR,
+	FATAL
+};
+
+struct StreamColor
+{
+	int fontmod{0};
+	int bcolormod{40};
+	int tcolormod{37};
+
+	StreamColor() = default;
+	StreamColor(int f, int b, int s) : fontmod(f), bcolormod(b), tcolormod(s) {};
+
+	std::string construct(const std::string& text);
+};
+
+extern std::map <LogLevel, std::pair<std::string, StreamColor>> LogLevelTable;
+
+class ILogger
+{
 public:
-	Logger() = default;
-	Logger(LogMode mode) : mode(mode) {};
-	Logger(const Logger& other) = default;
-	Logger(Logger&& rval) = delete;
-	virtual ~Logger() = default;
+	ILogger() = default;
+	ILogger(const ILogger& other) = default;
+	ILogger(ILogger&& rval) = delete;
+	virtual ~ILogger() = default;
 
 public:
-	void log(LogLevel lvl, std::string message);
-
-	void setLogMode(LogMode mode);
+	virtual void log(LogLevel lvl, const std::string& message, const std::source_location& location = std::source_location::current()) = 0;
 };

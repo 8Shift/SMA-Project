@@ -227,7 +227,7 @@ class UUID {
     }
 
   private:
-    alignas(16) uint8_t data[16];
+      alignas(16) uint8_t data[16]{};
 };
 
 /*

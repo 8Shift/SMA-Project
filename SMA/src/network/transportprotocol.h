@@ -14,6 +14,8 @@
 
 #include "protocol.h"
 
+#pragma comment(lib, "ws2_32.lib")
+
 class ITransport
 {
 protected:
@@ -30,6 +32,8 @@ public:
 	ITransport() = default;
 	ITransport(const ITransport &other) = default;
 	ITransport(ITransport&& rvalue) = delete;
+
+	virtual ~ITransport() = default;
 
 	virtual int connection(const std::string& hostname, uint32_t port) = 0;
 	virtual void generatePublicKey() = 0;

@@ -2,8 +2,6 @@
 
 #include <cstdint>
 
-enum class SMAProtocolType;
-
 enum class SMAProtocolType
 {
 	TEXT,

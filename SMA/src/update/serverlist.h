@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 #include <vector>
 
 #include "json.hpp"
@@ -29,9 +30,10 @@ enum class ServerNodeType
 
 struct ServerListNode
 {
+	std::string name;
 	ServerNodeStatus status;
 	ServerNodeType type;
-	std::string ipv4;
+	IPV4 ipv4;
 	uint32_t ping;
 };
 
@@ -39,5 +41,18 @@ class ServerList
 {
 private:
 	std::vector <ServerListNode> nodes;
-	FILE* configFile;
+	std::fstream configFile;
+public:
+	ServerList() = default;
+	ServerList(std::string filename);
+	ServerList(const ServerList& other) = delete;
+	ServerList(ServerList&& rvalue) = delete;
+
+	~ServerList();
+
+public:
+	void loadServerList();
+	void exportServerList();
+	void addServerNode();
+	void deleteServerNode();
 };

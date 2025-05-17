@@ -35,15 +35,20 @@ int UdpTransport::connection(const std::string& hostname, uint32_t port)
     return 0;
 }
 
+int UdpTransport::listening()
+{
+    return listen(sd, 5);   
+}
+
 void UdpTransport::generatePublicKey()
 {
-    RSAKeys = Botan::RSA_PrivateKey(rng, 2048);
+    RSAKeys = std::make_unique <Botan::RSA_PrivateKey>(rng, 2048);
 }
 
 int UdpTransport::sendMessage(SMAProtocol req)
 {
     Botan::secure_vector<uint8_t> plaintext(req.payload.begin(), req.payload.end());
-    Botan::PK_Encryptor_EME encryptor(RSAKeys, rng, "OAEP(SHA-256)");
+    Botan::PK_Encryptor_EME encryptor(*RSAKeys, rng, "OAEP(SHA-256)");
     auto ciphertext = encryptor.encrypt(plaintext, rng);
     req.payload.assign(ciphertext.begin(), ciphertext.end());
 
@@ -78,8 +83,8 @@ SMAProtocol UdpTransport::recieveMessage()
     SMAProtocol tor;
     Protocol::deserialize(inBuff, tor);
 
-    decryptor = Botan::PK_Decryptor_EME(RSAKeys, rng, "OAEP(SHA-256)");
-    auto plaintext = decryptor.decrypt(tor.payload);
+    decryptor = std::make_unique <Botan::PK_Decryptor_EME>(RSAKeys, rng, "OAEP(SHA-256)");
+    auto plaintext = decryptor->decrypt(tor.payload);
 
     tor.payload = std::move(std::vector <uint8_t>(plaintext.begin(), plaintext.end()));
 

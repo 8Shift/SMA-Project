@@ -1,6 +1,6 @@
 #include "transportprotocol.h"
 
-class TcpTransport final : ITransport
+class TcpTransport : public ITransport
 {
 public:
 	TcpTransport() = default;
@@ -11,6 +11,7 @@ public:
 public:
 
 	int connection(const std::string& hostname, uint32_t port) override;
+	int listening() override;
 	void generatePublicKey() override;
 	int sendMessage(SMAProtocol req) override;
 	SMAProtocol recieveMessage() override;

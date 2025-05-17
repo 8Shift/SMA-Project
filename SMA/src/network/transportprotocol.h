@@ -19,15 +19,15 @@
 class ITransport
 {
 protected:
-	WSAData wsaData;
-	SOCKET sd;
-	sockaddr_in connectAddrInfo;
+	WSAData wsaData{};
+	SOCKET sd{};
+	sockaddr_in connectAddrInfo{};
 	std::vector <uint8_t> inBuff;
 	std::vector <uint8_t> outBuff;
 	Botan::AutoSeeded_RNG rng;
-	Botan::RSA_PrivateKey RSAKeys;
-	Botan::PK_Encryptor_EME encryptor;
-	Botan::PK_Decryptor_EME decryptor;
+	std::unique_ptr <Botan::RSA_PrivateKey> RSAKeys;
+	std::unique_ptr <Botan::PK_Encryptor_EME> encryptor;
+	std::unique_ptr <Botan::PK_Decryptor_EME> decryptor;
 public:
 	ITransport() = default;
 	ITransport(const ITransport &other) = default;
@@ -36,6 +36,7 @@ public:
 	virtual ~ITransport() = default;
 
 	virtual int connection(const std::string& hostname, uint32_t port) = 0;
+	virtual int listening() = 0;
 	virtual void generatePublicKey() = 0;
 	virtual int sendMessage(SMAProtocol req) = 0;
 	virtual SMAProtocol recieveMessage() = 0;

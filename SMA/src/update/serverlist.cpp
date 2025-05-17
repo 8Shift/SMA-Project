@@ -53,3 +53,41 @@ void IPV4::fromStdString(const std::string& ipv4)
     }
 }
 
+ServerList::ServerList(std::string filename)
+{
+    configFile = std::fstream(filename);
+
+    if (!configFile.is_open())
+    {
+        throw std::runtime_error("Cannot open config file");
+    }
+}
+
+ServerList::~ServerList()
+{
+    if (configFile.is_open())
+    {
+        configFile.close();
+    }
+}
+
+void ServerList::loadServerList()
+{
+    using js = nlohmann::json;
+
+    js data = js::parse(configFile);
+
+    for (const auto& serverData : data) {
+        ServerListNode node;
+        node.name = serverData["name"].get<std::string>();
+        node.ipv4.fromStdString(serverData["ip"].get<std::string>());
+        node.type = static_cast<ServerNodeType>(stoi(serverData["type"].get<std::string>()));
+
+        nodes.push_back(node);
+    }
+}
+
+void ServerList::exportServerList()
+{
+
+}

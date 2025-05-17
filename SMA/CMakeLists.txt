@@ -8,7 +8,7 @@ add_executable(
 	src/main.cpp
     src/network/crc32.h 
     src/crypt/crypt.h src/crypt/crypt.cpp
-    src/core/app.h src/core/app.cpp
+    src/core/app.h 
      
     src/update/serverlist.h src/update/serverlist.cpp
     src/core/server.h src/core/server.cpp

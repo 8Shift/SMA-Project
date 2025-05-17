@@ -39,14 +39,14 @@ int TcpTransport::connection(const std::string& hostname, uint32_t port)
 
 void TcpTransport::generatePublicKey()
 {
-    RSAKeys = Botan::RSA_PrivateKey(rng, 2048);
+    RSAKeys = std::make_unique <Botan::RSA_PrivateKey>(rng, 2048);
 }
 
 int TcpTransport::sendMessage(SMAProtocol req)
 {
     Botan::secure_vector<uint8_t> plaintext(req.payload.begin(), req.payload.end());
-    encryptor = Botan::PK_Encryptor_EME(RSAKeys, rng, "OAEP(SHA-256)");
-    auto ciphertext = encryptor.encrypt(plaintext, rng);
+    encryptor = std::make_unique<Botan::PK_Encryptor_EME>(RSAKeys, rng, "OAEP(SHA-256)");
+    auto ciphertext = encryptor->encrypt(plaintext, rng);
     req.payload.assign(ciphertext.begin(), ciphertext.end());
 
     Protocol::serialize(req, outBuff);
@@ -60,6 +60,7 @@ int TcpTransport::sendMessage(SMAProtocol req)
     return 0;
 }
 
+[[nodiscard]]
 SMAProtocol TcpTransport::recieveMessage()
 {
     std::vector<uint8_t> temp(4096);
@@ -81,8 +82,8 @@ SMAProtocol TcpTransport::recieveMessage()
     SMAProtocol tor;
     Protocol::deserialize(inBuff, tor);
 
-    decryptor = Botan::PK_Decryptor_EME(RSAKeys, rng, "OAEP(SHA-256)");
-    auto plaintext = decryptor.decrypt(tor.payload);
+    decryptor = std::make_unique <Botan::PK_Decryptor_EME>(RSAKeys, rng, "OAEP(SHA-256)");
+    auto plaintext = decryptor->decrypt(tor.payload);
     
     tor.payload = std::move(std::vector <uint8_t>(plaintext.begin(), plaintext.end()));
 
